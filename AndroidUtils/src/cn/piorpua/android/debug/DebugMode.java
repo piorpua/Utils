@@ -1,28 +1,62 @@
 package cn.piorpua.android.debug;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import android.text.TextUtils;
 import android.util.Log;
 
 /**
  * Debug 工具类
- * @author piorpua
- * @version 2013/08/20
- * @cloud_sync
  */
 public final class DebugMode {
     
     /**
      * Debug 日志开关
      */
-    public static boolean EnableLog = false;
+    public static boolean ENABLE_DEBUG = true;
     
     /**
      * Debug 标签
      */
-    public static String   DebugTag = "DebugMode";
+    public static final String DEBUG_TAG = "DebugMode";
+    
+    private static final Set<String> sTagFilter = new HashSet<String>();
+    
+    /**
+     * 增加过滤标签
+     * @param tag 指定标签
+     * @return true if this set is modified, false otherwise.
+     */
+    public static boolean addFilterTag(String tag) {
+    	if (TextUtils.isEmpty(tag)) {
+    		return false;
+    	}
+    	
+    	return sTagFilter.add(tag);
+    }
+    
+    /**
+     * 移除过滤标签
+     * @param tag 指定标签
+     * @return true if this set is modified, false otherwise.
+     */
+    public static boolean removeFilterTag(String tag) {
+    	if (TextUtils.isEmpty(tag)) {
+    		return false;
+    	}
+    	
+    	return sTagFilter.remove(tag);
+    }
+    
+    /**
+     * 重置过滤标签
+     */
+    public static void resetFilterTag() {
+    	sTagFilter.clear();
+    }
     
     /**
      * 计时开始
@@ -239,7 +273,7 @@ public final class DebugMode {
      * @param tag
      */
     public static void printStack(String tag) {
-        if (EnableLog) {
+        if (ENABLE_DEBUG) {
             new Exception(tag).printStackTrace();
         }
     }
@@ -279,37 +313,43 @@ public final class DebugMode {
      * @return
      */
     private static String logWithTag(String tag, String log) {
+    	if (!sTagFilter.isEmpty() && 
+    			!sTagFilter.contains(tag)) {
+    		
+    		return null;
+    	}
+    	
         return TextUtils.isEmpty(tag) ? log : tag + " : " + log;
     }
     
     
     private static void log_verbose(String log) {
-        if (EnableLog && !TextUtils.isEmpty(log)) {
-            Log.v(DebugTag, log);
+        if (ENABLE_DEBUG && !TextUtils.isEmpty(log)) {
+            Log.v(DEBUG_TAG, log);
         }
     }
     
     private static void log_debug(String log) {
-        if (EnableLog && !TextUtils.isEmpty(log)) {
-            Log.d(DebugTag, log);
+        if (ENABLE_DEBUG && !TextUtils.isEmpty(log)) {
+            Log.d(DEBUG_TAG, log);
         }
     }
     
     private static void log_info(String log) {
-        if (EnableLog && !TextUtils.isEmpty(log)) {
-            Log.i(DebugTag, log);
+        if (ENABLE_DEBUG && !TextUtils.isEmpty(log)) {
+            Log.i(DEBUG_TAG, log);
         }
     }
     
     private static void log_warn(String log) {
-        if (EnableLog && !TextUtils.isEmpty(log)) {
-            Log.w(DebugTag, log);
+        if (ENABLE_DEBUG && !TextUtils.isEmpty(log)) {
+            Log.w(DEBUG_TAG, log);
         }
     }
     
     private static void log_error(String log) {
-        if (EnableLog && !TextUtils.isEmpty(log)) {
-            Log.e(DebugTag, log);
+        if (ENABLE_DEBUG && !TextUtils.isEmpty(log)) {
+            Log.e(DEBUG_TAG, log);
         }
     }
     
