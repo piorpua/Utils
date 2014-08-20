@@ -93,7 +93,7 @@ public class CmdOutput {
         if (inStream != null && list != null) {
             try {
                 String line = null;
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, "GBK"));
                 while ((line = reader.readLine()) != null) {
                     if (line.isEmpty()) {
                         continue;
